@@ -1,0 +1,32 @@
+:root {
+    --bg: #0e0e11;
+    --fg: #e6e6eb;
+    --muted: #9aa0a6;
+    --accent: #6cf;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+}
+
+header, main, footer {
+    max-width: 960px;
+    margin: auto;
+    padding: 32px;
+}
+
+h1, h2, h3 {
+    margin-top: 0;
+}
+
+section {
+    margin-bottom: 64px;
+}
+
+footer {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
