@@ -1,0 +1,242 @@
+:root {
+    --bg: #2d2b30;
+    --text: #b2b2b2;
+    --border: #b2b2b2;
+    --link: #ff8534;
+    --link-hover: #ff2525;
+    --icon: #cfcfcf;
+}
+
+.card-links {
+    margin-top: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.card-links a {
+    color: var(--link);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
+}
+
+.card-links a:hover {
+    color: var(--link-hover);
+}
+
+.space {
+    flex-shrink: 0;
+}
+
+.space-left {
+    width: 0%;
+}
+
+.space-right {
+    width: 0%;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: "Mulish", sans-serif;
+    color: var(--text);
+    background: var(--bg);
+}
+
+.page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 0px 56px;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 0px;
+}
+
+.sidebar {
+    display: grid;
+    padding: 40px 40px 40px 0;
+    gap: 5px;
+
+    flex: 0 1 clamp(200px, 30vw, 400px);
+    min-width: 0;
+}
+
+.name-card {
+    border: 1px solid var(--border);
+    padding: 10px 10px;
+}
+
+.name {
+    margin: 0;
+    font-size: 24px;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+.content {
+    flex: 1;
+    min-width: 0;
+}
+
+/* сайд текст */
+/* сайд текст */
+.sidebar-text {
+    display: flex;
+    flex-direction: column;
+
+    /* как у sidebar: gap: 5px; */
+    gap: 5px;
+
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+/* каждый раздел = отдельный блок (как name-card / contacts-card) */
+.sidebar-block {
+    border: 1px solid var(--border);
+
+    /* как у твоих карточек */
+    padding: 10px 10px;
+
+    margin: 0;
+}
+
+/* заголовки (под твой ритм) */
+.sidebar-title {
+    margin: 0 0 20px; /* не 8px, а 10px как у тебя */
+    font-size: 18px;
+    font-weight: 400;
+}
+
+/* если где-то останутся <p> — чтобы не ломало ритм */
+.sidebar-block p {
+    margin: 0;
+}
+/* */
+
+.card {
+    margin: 0;
+}
+
+.thumb {
+    width: 100%;
+    aspect-ratio: 9 / 16;
+}
+
+.card-title {
+    margin: 20px 0 20px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.card-text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 400;
+    max-width: 100%;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px;
+}
+
+.thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* самое важное */
+    display: block;
+}
+
+/*
+Links in contact information
+*/
+.contacts-card {
+    border: 1px solid var(--border);
+    padding: 10px 10px;
+}
+
+.contacts-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    display: grid;
+    gap: 10px;
+}
+
+.contact-item {
+    display: grid;
+    align-items: center;
+}
+
+.contact-icon {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+}
+
+.contact-icon .icon {
+    width: 30px;
+    height: 30px;
+    display: block;
+
+    color: var(--icon);
+    fill: currentColor;
+    opacity: 0.85;
+}
+
+.contact-item:hover .contact-icon .icon {
+    color: var(--link);
+    opacity: 1;
+}
+
+.contact-link {
+    color: var(--link);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 400;
+    gap: 20px;
+
+    min-width: 0; /* важно для flex, чтобы текст мог сжиматься */
+}
+
+.contact-link-text {
+    min-width: 0;
+    overflow-wrap: anywhere;  /* ломает длинные строки где угодно */
+    word-break: break-word;   /* запасной вариант */
+}
+
+
+
+
+
+@media (max-width: 1000px) {
+    .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .cards {
+        grid-template-columns: 1fr;
+    }
+}
