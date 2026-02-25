@@ -1,0 +1,394 @@
+:root {
+  --bg: #191919;
+  --text: #000000;
+  --textLeft: #e5e5e5;
+  --link: #80bfff;
+  --link-hover: #e357ff;
+  --icon: #4f4f4f;
+
+  /* rhythm */
+  --card-pad: 10px;
+  --gap-xs: 10px;
+  --gap-s: 10px;
+  --gap-m: 20px;
+  --gap-l: 40px;
+
+  /* cards */
+  --thumb-radius: 5px;
+  --card-radius: 5px;
+
+  /* layout numbers */
+  --page-margin-x: 40px;
+
+  /* card layout */
+  --card-gap: 40px;
+  --thumb-col: 25%;
+  --thumb-max: 350px;
+  /* защита от огромных картинок */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Mulish", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* Outer layout (HTML has <main class="layout">) */
+.layout {
+  display: flex;
+}
+
+/* Side “spaces” */
+.space {
+  flex-shrink: 0;
+}
+
+.space-left,
+.space-right {
+  width: 0%;
+}
+
+/* Main page container */
+.page {
+  margin: 0 var(--page-margin-x) 40px var(--page-margin-x);
+
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.sidebar {
+  display: grid;
+  padding: 120px 40px 40px 0;
+  gap: 20px;
+  color: var(--textLeft);
+
+  flex: 0 1 clamp(200px, 25%, 100vw);
+  min-width: 0;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* =========================
+   Cards zone (UPDATED)
+   - list one after another
+   - desktop: image left, text right
+   - mobile: image top, text bottom
+   ========================= */
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  /* GRID вместо flex — проще менять порядок/раскладку */
+  display: grid;
+  grid-template-columns: minmax(0px, var(--thumb-col)) 1fr;
+  gap: var(--card-gap);
+  align-items: start;
+
+  border-radius: var(--card-radius);
+  min-width: 0;
+  background-color: #cccccc;
+}
+
+.thumb {
+  width: 100%;
+  max-width: var(--thumb-max);
+  overflow: hidden;
+  border-radius: var(--thumb-radius);
+}
+
+.thumb img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Text column */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.card-content {
+  text-align: center;
+}
+
+.card-title {
+  margin: 40px 0 0 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.card-text {
+  margin: 20px 40px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 400;
+  max-width: 100%;
+}
+
+.card-links {
+  margin-top: var(--gap-m);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.card-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px 14px;
+  border-radius: 5px;
+
+  background: var(--icon);
+  color: var(--textLeft);
+  text-decoration: none;
+  font-weight: 600;
+
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.card-links a:hover {
+  box-shadow: 0 0px 40px rgb(238, 0, 255, 0.25);
+  background: var(--bg);
+}
+
+.card-links a:active {
+  transform: translateY(0px);
+}
+
+.card-links a:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+/* =========================
+   Sidebar blocks
+   ========================= */
+
+.name-card,
+.contacts-card,
+.sidebar-block {
+  border-radius: var(--card-radius);
+  padding: var(--card-pad);
+  background-color: rgb(36, 36, 36);
+}
+
+.name {
+  margin: 0;
+  font-size: 25px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.sidebar-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.sidebar-title {
+  margin: 0 0 var(--gap-m);
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.sidebar-block p {
+  margin: 0;
+}
+
+.sidebar-block p+p {
+  margin-top: 12px;
+}
+
+/* =========================
+   Contacts
+   ========================= */
+
+.contacts-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  display: grid;
+  gap: var(--gap-s);
+}
+
+.contact-item {
+  display: grid;
+  align-items: center;
+}
+
+.contact-icon {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 30px;
+}
+
+.contact-icon .icon {
+  width: 30px;
+  height: 30px;
+  display: block;
+
+  color: var(--link);
+  fill: currentColor;
+  opacity: 0.85;
+}
+
+.contact-item:hover .contact-icon .icon {
+  color: var(--link-hover);
+  opacity: 1;
+}
+
+.contact-link {
+  color: var(--link);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 400;
+  gap: var(--gap-m);
+
+  min-width: 0;
+}
+
+.contact-link-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.contact-link:hover {
+  color: var(--link-hover);
+}
+
+/* =========================
+   Responsive
+   ========================= */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  :root {
+    --page-margin-x: 20px;
+    --card-gap: 20px;
+  }
+
+  .sidebar {
+    padding: 80px 20px 20px 0;
+    flex: 0 1 32%;
+    /* было 0 0 32% */
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  :root {
+    --page-margin-x: 12px;
+  }
+
+  .page {
+    margin: 0;
+    gap: 12px;
+  }
+
+  .sidebar {
+    flex: 0 1 38%;
+    padding: 60px 12px 20px 0;
+    gap: 10px;
+  }
+
+  .content {
+    flex: 1;
+    min-width: 0;
+    /* КЛЮЧЕВО для корректного shrink в flex */
+  }
+
+  /* Ключевое: карточка становится 1 колонкой (картинка сверху) */
+  .card {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 10px;
+  }
+
+  /* Картинка становится сверху и уменьшается */
+  .thumb {
+    max-width: 220px;
+    justify-self: center;
+    /* по центру */
+  }
+
+  .card-title {
+    margin: 0;
+    font-size: 16px;
+  }
+
+  .card-text {
+    margin: 8px 0 0 0;
+    font-size: 14px;
+  }
+
+  .card-links {
+    margin-top: 10px;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .card-links a {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .sidebar-title {
+    font-size: 15px;
+  }
+
+  .sidebar-text,
+  .contact-link {
+    font-size: 13px;
+  }
+}
+@media (max-width: 542px) {
+  .page {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .sidebar {
+    flex: none;
+    width: 100%;
+    padding: 20px 0 0 0;  /* убираем правый паддинг, который сужает */
+  }
+
+  .content {
+    width: 100%;
+  }
+}
