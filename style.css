@@ -43,7 +43,6 @@ body {
   background: var(--bg);
 }
 
-/* Outer layout (HTML has <main class="layout">) */
 .layout {
   display: flex;
 }
@@ -58,10 +57,9 @@ body {
   width: 0%;
 }
 
-/* Main page container */
 .page {
   margin: 0 var(--page-margin-x) 40px var(--page-margin-x);
-
+  gap: 30px;
   display: flex;
   align-items: flex-start;
   min-width: 0;
@@ -69,11 +67,11 @@ body {
 
 .sidebar {
   display: grid;
-  padding: 120px 40px 40px 0;
+  padding: 120px 0 40px 0;
   gap: 20px;
   color: var(--textLeft);
 
-  flex: 0 1 clamp(200px, 25%, 100vw);
+  flex: 0 1 clamp(200px, 22%, 100vw);
   min-width: 0;
 }
 
@@ -82,34 +80,25 @@ body {
   min-width: 0;
 }
 
-/* =========================
-   Cards zone (UPDATED)
-   - list one after another
-   - desktop: image left, text right
-   - mobile: image top, text bottom
-   ========================= */
-
 .cards {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 0px;
 }
 
 .card {
-  /* GRID вместо flex — проще менять порядок/раскладку */
+  grid-template-columns: 1fr;
+  padding: 10px;
   display: grid;
   grid-template-columns: minmax(0px, var(--thumb-col)) 1fr;
-  gap: var(--card-gap);
-  align-items: start;
+  gap: 10px;
+  align-items: stretch;
 
   border-radius: var(--card-radius);
   min-width: 0;
-  background-color: #cccccc;
 }
 
 .thumb {
-  width: 100%;
-  max-width: var(--thumb-max);
   overflow: hidden;
   border-radius: var(--thumb-radius);
 }
@@ -125,7 +114,9 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1;
+  padding: 0 0 30px 30px;
   min-width: 0;
+  background-color: #cccccc;
 }
 
 .card-content {
@@ -148,6 +139,7 @@ body {
 
 .card-links {
   margin-top: var(--gap-m);
+  margin-bottom: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -295,59 +287,51 @@ body {
    Responsive
    ========================= */
 
-/* Tablet */
-@media (max-width: 1024px) {
-  :root {
-    --page-margin-x: 20px;
-    --card-gap: 20px;
-  }
-
-  .sidebar {
-    padding: 80px 20px 20px 0;
-    flex: 0 1 32%;
-    /* было 0 0 32% */
-  }
-}
-
 /* Mobile */
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
   :root {
     --page-margin-x: 12px;
   }
 
-  .page {
-    margin: 0;
-    gap: 12px;
-  }
-
-  .sidebar {
-    flex: 0 1 38%;
-    padding: 60px 12px 20px 0;
-    gap: 10px;
-  }
-
-  .content {
-    flex: 1;
-    min-width: 0;
-    /* КЛЮЧЕВО для корректного shrink в flex */
-  }
-
-  /* Ключевое: карточка становится 1 колонкой (картинка сверху) */
   .card {
     grid-template-columns: 1fr;
     gap: 12px;
     padding: 10px;
   }
 
+  .card-body {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .page {
+    margin: 0;
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  .sidebar {
+    gap: 10px;
+        flex: none;
+    width: 100%;
+    padding: 20px 0 0 0;
+  }
+
+  .content {
+    flex: 1;
+      width: 100%;
+    min-width: 0;
+    /* КЛЮЧЕВО для корректного shrink в flex */
+  }
+
   /* Картинка становится сверху и уменьшается */
   .thumb {
-    max-width: 220px;
     justify-self: center;
     /* по центру */
   }
 
   .card-title {
-    margin: 0;
+    margin-top: 20px;
     font-size: 16px;
   }
 
@@ -359,7 +343,6 @@ body {
   .card-links {
     margin-top: 10px;
     gap: 8px;
-    justify-content: center;
   }
 
   .card-links a {
@@ -374,21 +357,5 @@ body {
   .sidebar-text,
   .contact-link {
     font-size: 13px;
-  }
-}
-@media (max-width: 542px) {
-  .page {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .sidebar {
-    flex: none;
-    width: 100%;
-    padding: 20px 0 0 0;  /* убираем правый паддинг, который сужает */
-  }
-
-  .content {
-    width: 100%;
   }
 }
