@@ -31,14 +31,14 @@ window.PORTFOLIO_DATA = {
 
   cards: [
         {
-      title: "Utin computer (Alta games)",
+      title: "NDA",
       image: { src: "img/Publishing.00_01_01_10.Still001.jpg", alt: "Tool development preview" },
       text:
       ["Working as Unity developer in a team of 6 on a game for mobile game publishers.",
         "Implementation of locomotion, pathfinding, crowd control-system, Animator Controller, scene optimization, shader writing, editor tools, drag and drop, and design configuration.",
         "From 2026 March to 2026 April"
       ],
-      links: [{ href: "https://youtu.be/nt1I4GwjVg8", label: "Youtube", external: true }
+      links: [{ href: "https://youtu.be/C308UDhfXpA", label: "Youtube", external: true }
 ]
     },
     {
