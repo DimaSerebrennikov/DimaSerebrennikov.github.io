@@ -50,6 +50,7 @@ window.PORTFOLIO_DATA = {
       "From December 2025"
       ],
       links: [
+        { href: "https://www.youtube.com/@dima_serebrennikov", label: "YouTube", external: true },
          { href: "https://www.reddit.com/u/DimaSerebrennikov/s/AXz3Sspb8o", label: "Reddit", external: true },
         { href: "https://www.instagram.com/dima_serebrennnikov?igsh=YXlwNXE0bXp1Yndp", label: "Instagram", external: true },
          { href: "https://www.tiktok.com/@dima.serebrenniko7?_r=1&_t=ZS-94AqnVVat4G", label: "Tiktok", external: true },
