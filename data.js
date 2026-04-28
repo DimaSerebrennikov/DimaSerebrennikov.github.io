@@ -38,8 +38,7 @@ window.PORTFOLIO_DATA = {
         "Implementation of locomotion, pathfinding, crowd control-system, Animator Controller, scene optimization, shader writing, editor tools, drag and drop, and design configuration.",
         "From 2026 March to 2026 April"
       ],
-      links: [{ href: "https://youtu.be/C308UDhfXpA", label: "Youtube", external: true }
-]
+      links: []
     },
     {
       title: "Tool development",
