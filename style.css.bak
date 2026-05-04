@@ -6,11 +6,8 @@
   --link-hover: #e357ff;
   --icon: #4f4f4f;
   --card-surface: #cccccc;
-  --gallery-bg: #191919;
+  --gallery-bg: #000000;
   --gallery-gap: 6px;
-  --gallery-pad-x: 10px;
-  --gallery-pad-top: 10px;
-  --gallery-end-width: clamp(40px, 8vw, 72px);
 
   /* rhythm */
   --card-pad: 10px;
@@ -24,7 +21,7 @@
   --card-radius: 5px;
 
   /* layout numbers */
-  --page-margin-x: 30px;
+  --page-margin-x: 40px;
 }
 
 * {
@@ -67,7 +64,7 @@ body {
 .sidebar {
   display: grid;
   padding: 120px 0 40px 0;
-  gap: 15px;
+  gap: 20px;
   color: var(--textLeft);
   flex: 0 1 clamp(200px, 22%, 100vw);
   min-width: 0;
@@ -81,7 +78,7 @@ body {
 .cards {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 24px;
   padding-top: 0;
 }
 
@@ -97,17 +94,12 @@ body {
   position: relative;
 }
 
-.card-gallery-wrap.has-end-gradient {
-  background: var(--gallery-bg);
-}
-
 .card-gallery {
   display: flex;
   gap: var(--gallery-gap);
   overflow-x: auto;
   overflow-y: hidden;
-  padding-bottom: 5px;
-  padding-top: 5px;
+  padding: 10px;
   background: var(--gallery-bg);
   overscroll-behavior-x: contain;
   scrollbar-width: none;
@@ -138,13 +130,6 @@ body {
   pointer-events: none;
 }
 
-.gallery-end {
-  flex: 0 0 var(--gallery-end-width);
-  align-self: stretch;
-  border-radius: var(--thumb-radius);
-  background: linear-gradient(90deg, rgb(227 87 255 / 0%) 0%, rgb(227 87 255 / 40%) 55%, rgb(227 87 255 / 85%) 100%);
-}
-
 .card-gallery-hint {
   position: absolute;
   right: 18px;
@@ -165,8 +150,8 @@ body {
 .card-footer {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  padding: 18px var(--gallery-pad-x) 20px;
+  gap: 16px;
+  padding: 18px 20px 20px 20px;
   background: var(--card-surface);
 }
 

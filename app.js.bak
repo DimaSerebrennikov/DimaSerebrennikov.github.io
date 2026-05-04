@@ -97,13 +97,6 @@
     return item;
   }
 
-  function createGalleryEnd() {
-    const end = document.createElement("div");
-    end.className = "gallery-end";
-    end.setAttribute("aria-hidden", "true");
-    return end;
-  }
-
   function enableDragScroll(scroller) {
     let isDragging = false;
     let startX = 0;
@@ -159,16 +152,9 @@
       ? card.images
       : (card.image ? [card.image] : []);
 
-    const galleryNodes = images.map(function (image, index) {
+    gallery.replaceChildren(...images.map(function (image, index) {
       return createGalleryImage(image, index, card.title);
-    });
-
-    if (images.length > 1) {
-      galleryNodes.push(createGalleryEnd());
-      galleryWrap.classList.add("has-end-gradient");
-    }
-
-    gallery.replaceChildren(...galleryNodes);
+    }));
 
     enableDragScroll(gallery);
     galleryWrap.appendChild(gallery);
