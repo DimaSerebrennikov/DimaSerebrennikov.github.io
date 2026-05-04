@@ -39,7 +39,6 @@
     svg.classList.add("icon");
 
     const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
-    // "xlink:href" works everywhere; modern browsers also accept plain "href".
     use.setAttributeNS("http://www.w3.org/1999/xlink", "href", `#${iconId}`);
 
     svg.appendChild(use);
@@ -71,66 +70,111 @@
     return li;
   }
 
-function appendCardText(container, textData) {
-  if (!textData) {
-    return;
-  }
+  function createSidebarBlock(block) {
+    const wrap = document.createElement("div");
+    wrap.className = "sidebar-block";
 
-  const paragraphs = Array.isArray(textData)
-    ? textData
-    : String(textData).split(/\r?\n+/);
-
-  for (const paragraph of paragraphs) {
-    if (!paragraph.trim()) {
-      continue;
+    for (const pText of block.paragraphs) {
+      const p = document.createElement("p");
+      p.textContent = pText;
+      wrap.appendChild(p);
     }
 
-    const p = document.createElement("p");
-    p.className = "card-text";
-    p.textContent = paragraph.trim();
-
-    container.appendChild(p);
-  }
-}
-
-function createSidebarBlock(block) {
-  const wrap = document.createElement("div");
-  wrap.className = "sidebar-block";
-
-  for (const pText of block.paragraphs) {
-    const p = document.createElement("p");
-    p.textContent = pText;
-    wrap.appendChild(p);
+    return wrap;
   }
 
-  return wrap;
-}
+  function createGalleryImage(image, index, title) {
+    const item = document.createElement("div");
+    item.className = "gallery-item";
+
+    const img = document.createElement("img");
+    img.src = image.src;
+    img.alt = image.alt || `${title} image ${index + 1}`;
+    img.loading = "lazy";
+    img.draggable = false;
+
+    item.appendChild(img);
+    return item;
+  }
+
+  function enableDragScroll(scroller) {
+    let isDragging = false;
+    let startX = 0;
+    let startScrollLeft = 0;
+
+    scroller.addEventListener("mousedown", function (event) {
+      if (event.button !== 0) {
+        return;
+      }
+
+      isDragging = true;
+      startX = event.clientX;
+      startScrollLeft = scroller.scrollLeft;
+      scroller.classList.add("is-dragging");
+      event.preventDefault();
+    });
+
+    window.addEventListener("mousemove", function (event) {
+      if (!isDragging) {
+        return;
+      }
+
+      const deltaX = event.clientX - startX;
+      scroller.scrollLeft = startScrollLeft - deltaX;
+    });
+
+    function stopDrag() {
+      if (!isDragging) {
+        return;
+      }
+
+      isDragging = false;
+      scroller.classList.remove("is-dragging");
+    }
+
+    window.addEventListener("mouseup", stopDrag);
+    scroller.addEventListener("mouseleave", stopDrag);
+    window.addEventListener("blur", stopDrag);
+  }
+
   function createCard(card) {
     const article = document.createElement("article");
     article.className = "card";
 
-    const thumb = document.createElement("div");
-    thumb.className = "thumb";
+    const galleryWrap = document.createElement("div");
+    galleryWrap.className = "card-gallery-wrap";
 
-    const img = document.createElement("img");
-    img.src = card.image.src;
-    img.alt = card.image.alt;
-    img.loading = "lazy";
-    thumb.appendChild(img);
+    const gallery = document.createElement("div");
+    gallery.className = "card-gallery";
+    gallery.setAttribute("aria-label", `${card.title} image gallery`);
 
-    const body = document.createElement("div");
-    body.className = "card-body";
+    const images = Array.isArray(card.images) && card.images.length > 0
+      ? card.images
+      : (card.image ? [card.image] : []);
 
-    const title = document.createElement("h2");
-    title.className = "card-title";
-    title.textContent = card.title;
+    gallery.replaceChildren(...images.map(function (image, index) {
+      return createGalleryImage(image, index, card.title);
+    }));
 
-    body.appendChild(title);
-    appendCardText(body, card.text);
+    enableDragScroll(gallery);
+    galleryWrap.appendChild(gallery);
+
+    if (images.length > 1) {
+      const hint = document.createElement("div");
+      hint.className = "card-gallery-hint";
+      hint.setAttribute("aria-hidden", "true");
+      hint.textContent = "↔";
+      galleryWrap.appendChild(hint);
+    }
+
+    article.appendChild(galleryWrap);
 
     if (card.links && card.links.length > 0) {
-      const linksP = document.createElement("p");
-      linksP.className = "card-links";
+      const footer = document.createElement("div");
+      footer.className = "card-footer";
+
+      const links = document.createElement("div");
+      links.className = "card-links";
 
       for (const link of card.links) {
         const a = document.createElement("a");
@@ -142,14 +186,12 @@ function createSidebarBlock(block) {
           a.rel = "noopener noreferrer";
         }
 
-        linksP.appendChild(a);
+        links.appendChild(a);
       }
 
-      body.appendChild(linksP);
+      footer.appendChild(links);
+      article.appendChild(footer);
     }
-
-    article.appendChild(thumb);
-    article.appendChild(body);
 
     return article;
   }

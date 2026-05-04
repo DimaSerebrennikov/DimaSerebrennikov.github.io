@@ -5,6 +5,9 @@
   --link: #80bfff;
   --link-hover: #e357ff;
   --icon: #4f4f4f;
+  --card-surface: #cccccc;
+  --gallery-bg: #000000;
+  --gallery-gap: 6px;
 
   /* rhythm */
   --card-pad: 10px;
@@ -19,12 +22,6 @@
 
   /* layout numbers */
   --page-margin-x: 40px;
-
-  /* card layout */
-  --card-gap: 40px;
-  --thumb-col: 25%;
-  --thumb-max: 350px;
-  /* защита от огромных картинок */
 }
 
 * {
@@ -47,7 +44,6 @@ body {
   display: flex;
 }
 
-/* Side “spaces” */
 .space {
   flex-shrink: 0;
 }
@@ -70,7 +66,6 @@ body {
   padding: 120px 0 40px 0;
   gap: 20px;
   color: var(--textLeft);
-
   flex: 0 1 clamp(200px, 22%, 100vw);
   min-width: 0;
 }
@@ -83,63 +78,84 @@ body {
 .cards {
   display: flex;
   flex-direction: column;
-  gap: 0px;
+  gap: 24px;
+  padding-top: 0;
 }
 
 .card {
-  grid-template-columns: 1fr;
-  padding: 10px;
-  display: grid;
-  grid-template-columns: minmax(0px, var(--thumb-col)) 1fr;
-  gap: 10px;
-  align-items: stretch;
-
-  border-radius: var(--card-radius);
-  min-width: 0;
-}
-
-.thumb {
-  overflow: hidden;
-  border-radius: var(--thumb-radius);
-}
-
-.thumb img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* Text column */
-.card-body {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  padding: 0 0 30px 30px;
-  min-width: 0;
-  background-color: #cccccc;
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  background: var(--card-surface);
 }
 
-.card-content {
-  text-align: center;
+.card-gallery-wrap {
+  position: relative;
 }
 
-.card-title {
-  margin: 40px 0 0 0;
-  font-size: 18px;
-  font-weight: 600;
+.card-gallery {
+  display: flex;
+  gap: var(--gallery-gap);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 10px;
+  background: var(--gallery-bg);
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
 }
 
-.card-text {
-  margin: 20px 40px 0 0;
-  font-size: 15px;
-  line-height: 1.5;
-  font-weight: 400;
-  max-width: 100%;
+.card-gallery::-webkit-scrollbar {
+  display: none;
+}
+
+.card-gallery.is-dragging {
+  cursor: grabbing;
+}
+
+.gallery-item {
+  flex: 0 0 clamp(180px, 42vw, 300px);
+  aspect-ratio: 9 / 16;
+  border-radius: var(--thumb-radius);
+  overflow: hidden;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+.card-gallery-hint {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 55%);
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px 20px 20px 20px;
+  background: var(--card-surface);
 }
 
 .card-links {
-  margin-top: var(--gap-m);
-  margin-bottom: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -151,20 +167,17 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   padding: 8px 14px;
   border-radius: 5px;
-
   background: var(--icon);
   color: var(--textLeft);
   text-decoration: none;
   font-weight: 600;
-
   transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .card-links a:hover {
-  box-shadow: 0 0px 40px rgb(238, 0, 255, 0.25);
+  box-shadow: 0 0 40px rgb(238 0 255 / 25%);
   background: var(--bg);
 }
 
@@ -176,10 +189,6 @@ body {
   outline: 2px solid var(--link);
   outline-offset: 2px;
 }
-
-/* =========================
-   Sidebar blocks
-   ========================= */
 
 .name-card,
 .contacts-card,
@@ -200,7 +209,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--gap-xs);
-
   font-size: 14px;
   line-height: 1.5;
   font-weight: 400;
@@ -216,19 +224,14 @@ body {
   margin: 0;
 }
 
-.sidebar-block p+p {
+.sidebar-block p + p {
   margin-top: 12px;
 }
-
-/* =========================
-   Contacts
-   ========================= */
 
 .contacts-list {
   margin: 0;
   padding: 0;
   list-style: none;
-
   display: grid;
   gap: var(--gap-s);
 }
@@ -250,7 +253,6 @@ body {
   width: 30px;
   height: 30px;
   display: block;
-
   color: var(--link);
   fill: currentColor;
   opacity: 0.85;
@@ -258,104 +260,68 @@ body {
 
 .contact-item:hover .contact-icon .icon {
   color: var(--link-hover);
-  opacity: 1;
 }
 
 .contact-link {
-  color: var(--link);
-  text-decoration: none;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  font-size: 14px;
-  font-weight: 400;
-  gap: var(--gap-m);
-
-  min-width: 0;
-}
-
-.contact-link-text {
-  min-width: 0;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  gap: 12px;
+  color: var(--textLeft);
+  text-decoration: none;
 }
 
 .contact-link:hover {
   color: var(--link-hover);
 }
 
-/* =========================
-   Responsive
-   ========================= */
+.contact-link-text {
+  font-size: 14px;
+  line-height: 1.4;
+}
 
-/* Mobile */
-@media (max-width: 1000px) {
-  :root {
-    --page-margin-x: 12px;
-  }
-
-  .card {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    padding: 10px;
-  }
-
-  .card-body {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
+@media (max-width: 900px) {
   .page {
-    margin: 0;
-    gap: 10px;
     flex-direction: column;
+    gap: 20px;
   }
 
   .sidebar {
-    gap: 10px;
-        flex: none;
     width: 100%;
-    padding: 20px 0 0 0;
+    padding-bottom: 0;
   }
 
   .content {
-    flex: 1;
-      width: 100%;
-    min-width: 0;
-    /* КЛЮЧЕВО для корректного shrink в flex */
+    width: 100%;
   }
 
-  /* Картинка становится сверху и уменьшается */
-  .thumb {
-    justify-self: center;
-    /* по центру */
+  .gallery-item {
+    flex-basis: min(78vw, 420px);
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --page-margin-x: 16px;
   }
 
-  .card-title {
-    margin-top: 20px;
-    font-size: 16px;
+  .sidebar {
+    padding-top: 24px;
   }
 
-  .card-text {
-    margin: 8px 0 0 0;
-    font-size: 14px;
+  .card-gallery {
+    padding: 8px;
   }
 
-  .card-links {
-    margin-top: 10px;
-    gap: 8px;
+  .gallery-item {
+    flex-basis: 82vw;
   }
 
-  .card-links a {
-    padding: 6px 10px;
-    font-size: 13px;
+  .card-footer {
+    padding: 16px;
   }
 
-  .sidebar-title {
-    font-size: 15px;
-  }
-
-  .sidebar-text,
-  .contact-link {
-    font-size: 13px;
+  .card-gallery-hint {
+    right: 14px;
+    bottom: 14px;
   }
 }
