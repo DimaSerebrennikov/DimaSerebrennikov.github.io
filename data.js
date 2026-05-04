@@ -34,9 +34,12 @@ window.PORTFOLIO_DATA = {
   sidebarBlocks: [
     {
       paragraphs: [
-        "Links to all my materials are in this portfolio. dmytroserebrennikov@gmail.com"
+"dmytroserebrennikov@gmail.com",
+"Tool development since 2025. I love open-source tools so you don't have to make all your games from scratch, you can just customize the tool to suit your needs!",
+"Game development since 2022. I love playing video games, especially Deadlock. I also love DST. My childhood favorite games are Broforce and Rogue Legacy and TF2 and Savage.",
+"Graphic designer from 2014 to 2022, starting at 12 y.o., so you can figure out how old I am =)",
       ]
-    }
+    },
   ],
 
   cards: [
@@ -55,7 +58,7 @@ window.PORTFOLIO_DATA = {
         { href: "https://www.youtube.com/@dima_serebrennikov", label: "YouTube", external: true },
         { href: "https://www.reddit.com/u/DimaSerebrennikov/s/AXz3Sspb8o", label: "Reddit", external: true },
         { href: "https://www.instagram.com/dima_serebrennnikov?igsh=YXlwNXE0bXp1Yndp", label: "Instagram", external: true },
-        { href: "https://www.tiktok.com/@dima.serebrenniko7?_r=1&_t=ZS-94AqnVVat4G", label: "Tiktok", external: true },
+        { href: "https://www.tiktok.com/@dima.serebrennikov", label: "Tiktok", external: true },
         { href: "https://x.com/dima_serebrenni", label: "Twitter", external: true }
       ]
     },
@@ -72,7 +75,7 @@ window.PORTFOLIO_DATA = {
       links: [
         { href: "https://dimaserebrennikov.itch.io/", label: "Itch.io", external: true },
         { href: "https://play.google.com/store/apps/dev?id=5035107287525947877", label: "Play Market", external: true },
-        { href: "https://github.com/DimaSerebrennikov", label: "GitHub but I don't like free posting", external: true }
+        { href: "https://github.com/DimaSerebrennikov", label: "GitHub", external: true }
       ]
     },
     {
@@ -90,8 +93,23 @@ window.PORTFOLIO_DATA = {
           external: true
         },
                 {
+          href: "https://sketchfab.com/DimaSerebrennikov",
+          label: "Sketchfab",
+          external: true
+        },
+                        {
+          href: "https://www.behance.net/seredim",
+          label: "Behance",
+          external: true
+        },
+                        {
+          href: "https://www.artstation.com/seredim",
+          label: "Artstation",
+          external: true
+        },
+                        {
           href: "https://www.shutterstock.com/ru/g/ArtHub01",
-          label: "Arthub",
+          label: "Arthub, worked on them",
           external: true
         },
       ]

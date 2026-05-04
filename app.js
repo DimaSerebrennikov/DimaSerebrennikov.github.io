@@ -97,51 +97,138 @@
     return item;
   }
 
-  function createGalleryEnd() {
-    const end = document.createElement("div");
-    end.className = "gallery-end";
-    end.setAttribute("aria-hidden", "true");
-    return end;
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function getMaxScrollLeft(scroller) {
+    return Math.max(0, scroller.scrollWidth - scroller.clientWidth);
+  }
+
+  function getGalleryWrap(scroller) {
+    return scroller.parentElement;
+  }
+
+  const galleryGlowMaxPullDistance = 90;
+
+  function setGalleryDragOffset(scroller, dragOffset) {
+    scroller.style.setProperty("--gallery-drag-offset", `${dragOffset.toFixed(2)}px`);
+  }
+
+  function getGalleryGlowStrength(pullDistance) {
+    const progress = clamp(pullDistance / galleryGlowMaxPullDistance, 0, 1);
+
+    return progress * progress * (3 - 2 * progress);
+  }
+
+  function setGalleryEdgeGlow(scroller, leftGlow, rightGlow) {
+    const galleryWrap = getGalleryWrap(scroller);
+
+    if (!galleryWrap) {
+      return;
+    }
+
+    galleryWrap.style.setProperty("--gallery-left-edge-opacity", leftGlow.toFixed(3));
+    galleryWrap.style.setProperty("--gallery-right-edge-opacity", rightGlow.toFixed(3));
+  }
+
+  function setGalleryEdgeDragging(scroller, isEdgeDragging) {
+    const galleryWrap = getGalleryWrap(scroller);
+
+    if (!galleryWrap) {
+      return;
+    }
+
+    galleryWrap.classList.toggle("is-edge-dragging", isEdgeDragging);
+  }
+
+  function updateGalleryDragFeedback(scroller, targetScrollLeft) {
+    const maxScrollLeft = getMaxScrollLeft(scroller);
+    const leftPullDistance = Math.max(0, -targetScrollLeft);
+    const rightPullDistance = Math.max(0, targetScrollLeft - maxScrollLeft);
+    const dragOffset = clamp((leftPullDistance - rightPullDistance) * 0.12, -14, 14);
+
+    setGalleryDragOffset(scroller, dragOffset);
+    setGalleryEdgeGlow(
+      scroller,
+      getGalleryGlowStrength(leftPullDistance),
+      getGalleryGlowStrength(rightPullDistance)
+    );
+  }
+
+  function resetGalleryDragFeedback(scroller) {
+    setGalleryDragOffset(scroller, 0);
+    setGalleryEdgeDragging(scroller, false);
+    setGalleryEdgeGlow(scroller, 0, 0);
   }
 
   function enableDragScroll(scroller) {
     let isDragging = false;
+    let activePointerId = null;
     let startX = 0;
     let startScrollLeft = 0;
-
-    scroller.addEventListener("mousedown", function (event) {
-      if (event.button !== 0) {
+    scroller.addEventListener("pointerdown", function (event) {
+      if (event.pointerType === "mouse" && event.button !== 0) {
         return;
       }
 
       isDragging = true;
+      activePointerId = event.pointerId;
       startX = event.clientX;
       startScrollLeft = scroller.scrollLeft;
       scroller.classList.add("is-dragging");
+
+      resetGalleryDragFeedback(scroller);
+      setGalleryEdgeDragging(scroller, true);
+
+      if (scroller.setPointerCapture) {
+        scroller.setPointerCapture(activePointerId);
+      }
+
       event.preventDefault();
     });
 
-    window.addEventListener("mousemove", function (event) {
-      if (!isDragging) {
+    scroller.addEventListener("pointermove", function (event) {
+      if (!isDragging || event.pointerId !== activePointerId) {
         return;
       }
 
       const deltaX = event.clientX - startX;
-      scroller.scrollLeft = startScrollLeft - deltaX;
+      const targetScrollLeft = startScrollLeft - deltaX;
+      const maxScrollLeft = getMaxScrollLeft(scroller);
+
+      scroller.scrollLeft = Math.max(0, Math.min(maxScrollLeft, targetScrollLeft));
+
+      updateGalleryDragFeedback(scroller, targetScrollLeft);
+      event.preventDefault();
     });
 
-    function stopDrag() {
+    function stopDrag(event) {
       if (!isDragging) {
         return;
       }
 
+      if (event && event.pointerId !== activePointerId) {
+        return;
+      }
+
+      if (activePointerId !== null && scroller.hasPointerCapture && scroller.hasPointerCapture(activePointerId)) {
+        scroller.releasePointerCapture(activePointerId);
+      }
+
       isDragging = false;
+      activePointerId = null;
       scroller.classList.remove("is-dragging");
+      resetGalleryDragFeedback(scroller);
     }
 
-    window.addEventListener("mouseup", stopDrag);
-    scroller.addEventListener("mouseleave", stopDrag);
-    window.addEventListener("blur", stopDrag);
+    scroller.addEventListener("pointerup", stopDrag);
+    scroller.addEventListener("pointercancel", stopDrag);
+    scroller.addEventListener("lostpointercapture", stopDrag);
+    window.addEventListener("blur", function () {
+      stopDrag();
+    });
   }
 
   function createCard(card) {
@@ -164,8 +251,7 @@
     });
 
     if (images.length > 1) {
-      galleryNodes.push(createGalleryEnd());
-      galleryWrap.classList.add("has-end-gradient");
+      galleryWrap.classList.add("has-edge-gradient");
     }
 
     gallery.replaceChildren(...galleryNodes);
@@ -177,7 +263,21 @@
       const hint = document.createElement("div");
       hint.className = "card-gallery-hint";
       hint.setAttribute("aria-hidden", "true");
-      hint.textContent = "↔";
+
+      const hintIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      hintIcon.setAttribute("viewBox", "0 0 24 24");
+      hintIcon.setAttribute("focusable", "false");
+
+      const hintPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      hintPath.setAttribute("d", "M5 12h14M9 8l-4 4 4 4M15 8l4 4-4 4");
+      hintPath.setAttribute("fill", "none");
+      hintPath.setAttribute("stroke", "currentColor");
+      hintPath.setAttribute("stroke-width", "2");
+      hintPath.setAttribute("stroke-linecap", "round");
+      hintPath.setAttribute("stroke-linejoin", "round");
+
+      hintIcon.appendChild(hintPath);
+      hint.appendChild(hintIcon);
       galleryWrap.appendChild(hint);
     }
 
