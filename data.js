@@ -8,43 +8,49 @@ window.PORTFOLIO_DATA = {
       name: "Patreon",
       href: "https://www.patreon.com/cw/DimaSerebrennikov",
       iconClasses: ["fa-brands", "fa-patreon"],
-      description: "Support my work and follow updates on the tools and games I’m building."
-    },
-    {
-      name: "Twitter",
-      href: "https://x.com/dima_serebrenni",
-      iconClasses: ["fa-brands", "fa-twitter"],
-      description: "Short development updates, release news, and quick notes from my current projects."
+      description: "Get my tools here and support what I do. I'll add updates and new tools whenever I can."
     },
     {
       name: "YouTube",
       href: "https://www.youtube.com/@dima_serebrennikov",
       iconClasses: ["fa-brands", "fa-youtube"],
-      description: "Tool demos, game-development videos, and longer walkthroughs of how my projects work."
+      description: "I post full videos with lots of progress. I try to keep them funny instead of getting too technical. I post shorts too."
     },
     {
-      name: "TikTok",
-      href: "https://www.tiktok.com/@dima.serebrennikov",
-      iconClasses: ["fa-brands", "fa-tiktok"],
-      description: "Quick development clips, experiments, and bite-size looks at works in progress."
+      name: "Creative Commons materials",
+      href: "https://drive.google.com/drive/folders/1ol3xviH_0FlgLQaBy66r8Om9Emwu-STf?usp=sharing",
+      iconClasses: ["fa-brands", "fa-google-drive"],
+      description: "Here are materials you can use for posts or publications. Use them however you want. Message me if you need something else."
+    },
+    {
+      name: "Twitter",
+      href: "https://x.com/dima_serebrenni",
+      iconClasses: ["fa-brands", "fa-twitter"],
+      description: "I post shorts here and sometimes leave comments. Twitter makes sure you won't miss them."
     },
     {
       name: "Instagram",
       href: "https://www.instagram.com/dima_serebrennnikov?igsh=YXlwNXE0bXp1Yndp",
       iconClasses: ["fa-brands", "fa-instagram"],
-      description: "Visual project highlights, behind-the-scenes progress, and selected finished work."
+      description: "I post shorts and like things I enjoy. I don't really comment here because the platform is full of meme bots."
+    },
+    {
+      name: "TikTok",
+      href: "https://www.tiktok.com/@dima.serebrennikov",
+      iconClasses: ["fa-brands", "fa-tiktok"],
+      description: "I post shorts and like things I enjoy. Most of the time I only like the less popular stuff because I'm not a kid."
     },
     {
       name: "LinkedIn",
       href: "https://www.linkedin.com/in/dmytro-serebrennikov-74784a3a7/",
       iconClasses: ["fa-brands", "fa-linkedin-in"],
-      description: "My professional profile, experience, skills, and work-related updates."
+      description: "Message me here if you want to work with me. I've been drawing illustrations since I was 12 and programming games since I was 20."
     },
     {
       name: "Telegram",
       href: "https://t.me/dima_serebrennikov",
       iconClasses: ["fa-brands", "fa-telegram"],
-      description: "A direct way to message me and stay in touch about projects or collaboration."
+      description: "Ask me anything here if you want a quick reply. I usually respond within 24 hours."
     }
   ]
 };
