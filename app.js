@@ -1,312 +1,189 @@
-/* global window, document */
+/* global window, document, navigator */
 
 (function () {
   "use strict";
 
   const data = window.PORTFOLIO_DATA;
-  if (!data) {
-    console.error("PORTFOLIO_DATA is missing. Check that data.js is loaded before app.js.");
+  const resourceList = document.getElementById("resourceList");
+  const copyStatus = document.getElementById("copyStatus");
+
+  if (!data || !resourceList || !copyStatus) {
     return;
   }
 
-  const elName = document.getElementById("name");
-  const elContacts = document.getElementById("contacts");
-  const elSidebarBlocks = document.getElementById("sidebarBlocks");
-  const elCards = document.getElementById("cards");
+  const resourceItems = data.resources.map(createResourceItem);
+  resourceItems.push(createEmailItem(data.email));
+  resourceList.replaceChildren(...resourceItems);
 
-  if (elName) {
-    elName.innerHTML = data.person.nameHtml;
+  function createIcon(iconClasses, className) {
+    const iconWrap = document.createElement("span");
+    iconWrap.className = className;
+    iconWrap.setAttribute("aria-hidden", "true");
+
+    const icon = document.createElement("i");
+    icon.classList.add(...iconClasses);
+    iconWrap.appendChild(icon);
+
+    return iconWrap;
   }
 
-  if (elContacts) {
-    elContacts.replaceChildren(...data.contacts.map(createContactItem));
-  }
+  function createResourceItem(resource, index) {
+    const item = document.createElement("li");
+    item.className = "resource-item";
 
-  if (elSidebarBlocks) {
-    elSidebarBlocks.replaceChildren(...data.sidebarBlocks.map(createSidebarBlock));
-  }
+    const card = document.createElement("div");
+    card.className = "resource-card";
 
-  if (elCards) {
-    elCards.replaceChildren(...data.cards.map(createCard));
-  }
+    const link = document.createElement("a");
+    link.className = "resource-link";
+    link.href = resource.href;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.setAttribute("aria-label", `Open ${resource.name} in a new tab`);
+    link.appendChild(createIcon(resource.iconClasses, "resource-icon"));
 
-  function createIcon(iconId) {
-    const span = document.createElement("span");
-    span.className = "contact-icon";
-    span.setAttribute("aria-hidden", "true");
+    const linkText = document.createElement("span");
+    linkText.className = "resource-name";
+    linkText.textContent = resource.name;
+    link.appendChild(linkText);
 
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.classList.add("icon");
+    const descriptionId = `resource-description-${index}`;
+    const descriptionShell = document.createElement("div");
+    descriptionShell.className = "resource-description-shell";
+    descriptionShell.id = descriptionId;
+    descriptionShell.setAttribute("aria-hidden", "true");
 
-    const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
-    use.setAttributeNS("http://www.w3.org/1999/xlink", "href", `#${iconId}`);
+    const description = document.createElement("div");
+    description.className = "resource-description";
 
-    svg.appendChild(use);
-    span.appendChild(svg);
-    return span;
-  }
+    const descriptionText = document.createElement("p");
+    descriptionText.textContent = resource.description;
+    description.appendChild(descriptionText);
+    descriptionShell.appendChild(description);
 
-  function createContactItem(contact) {
-    const li = document.createElement("li");
-    li.className = "contact-item";
+    card.append(link, descriptionShell);
 
-    const a = document.createElement("a");
-    a.className = "contact-link";
-    a.href = contact.href;
+    const toggle = document.createElement("button");
+    toggle.className = "side-button info-toggle";
+    toggle.type = "button";
+    toggle.setAttribute("aria-controls", descriptionId);
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-pressed", "false");
+    toggle.setAttribute("aria-label", `Show details about ${resource.name}`);
+    toggle.title = `Show details about ${resource.name}`;
 
-    if (contact.external) {
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-    }
+    const questionMark = document.createElement("span");
+    questionMark.className = "question-mark";
+    questionMark.setAttribute("aria-hidden", "true");
+    questionMark.textContent = "?";
+    toggle.appendChild(questionMark);
 
-    a.appendChild(createIcon(contact.icon));
+    toggle.addEventListener("click", function () {
+      const isOpen = item.classList.toggle("is-open");
 
-    const text = document.createElement("span");
-    text.className = "contact-link-text";
-    text.textContent = contact.text;
-    a.appendChild(text);
+      toggle.setAttribute("aria-expanded", String(isOpen));
+      toggle.setAttribute("aria-pressed", String(isOpen));
+      toggle.setAttribute(
+        "aria-label",
+        `${isOpen ? "Hide" : "Show"} details about ${resource.name}`
+      );
+      toggle.title = `${isOpen ? "Hide" : "Show"} details about ${resource.name}`;
+      descriptionShell.setAttribute("aria-hidden", String(!isOpen));
+    });
 
-    li.appendChild(a);
-    return li;
-  }
-
-  function createSidebarBlock(block) {
-    const wrap = document.createElement("div");
-    wrap.className = "sidebar-block";
-
-    for (const pText of block.paragraphs) {
-      const p = document.createElement("p");
-      p.textContent = pText;
-      wrap.appendChild(p);
-    }
-
-    return wrap;
-  }
-
-  function createGalleryImage(image, index, title) {
-    const item = document.createElement("div");
-    item.className = "gallery-item";
-
-    const img = document.createElement("img");
-    img.src = image.src;
-    img.alt = image.alt || `${title} image ${index + 1}`;
-    img.loading = "lazy";
-    img.draggable = false;
-
-    item.appendChild(img);
+    item.append(card, toggle);
     return item;
   }
 
+  function createEmailItem(email) {
+    const item = document.createElement("li");
+    item.className = "resource-item email-item";
 
-  function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, value));
-  }
-
-  function getMaxScrollLeft(scroller) {
-    return Math.max(0, scroller.scrollWidth - scroller.clientWidth);
-  }
-
-  function getGalleryWrap(scroller) {
-    return scroller.parentElement;
-  }
-
-  const galleryGlowMaxPullDistance = 90;
-
-  function setGalleryDragOffset(scroller, dragOffset) {
-    scroller.style.setProperty("--gallery-drag-offset", `${dragOffset.toFixed(2)}px`);
-  }
-
-  function getGalleryGlowStrength(pullDistance) {
-    const progress = clamp(pullDistance / galleryGlowMaxPullDistance, 0, 1);
-
-    return progress * progress * (3 - 2 * progress);
-  }
-
-  function setGalleryEdgeGlow(scroller, leftGlow, rightGlow) {
-    const galleryWrap = getGalleryWrap(scroller);
-
-    if (!galleryWrap) {
-      return;
-    }
-
-    galleryWrap.style.setProperty("--gallery-left-edge-opacity", leftGlow.toFixed(3));
-    galleryWrap.style.setProperty("--gallery-right-edge-opacity", rightGlow.toFixed(3));
-  }
-
-  function setGalleryEdgeDragging(scroller, isEdgeDragging) {
-    const galleryWrap = getGalleryWrap(scroller);
-
-    if (!galleryWrap) {
-      return;
-    }
-
-    galleryWrap.classList.toggle("is-edge-dragging", isEdgeDragging);
-  }
-
-  function updateGalleryDragFeedback(scroller, targetScrollLeft) {
-    const maxScrollLeft = getMaxScrollLeft(scroller);
-    const leftPullDistance = Math.max(0, -targetScrollLeft);
-    const rightPullDistance = Math.max(0, targetScrollLeft - maxScrollLeft);
-    const dragOffset = clamp((leftPullDistance - rightPullDistance) * 0.12, -14, 14);
-
-    setGalleryDragOffset(scroller, dragOffset);
-    setGalleryEdgeGlow(
-      scroller,
-      getGalleryGlowStrength(leftPullDistance),
-      getGalleryGlowStrength(rightPullDistance)
+    const emailField = document.createElement("div");
+    emailField.className = "email-field";
+    emailField.appendChild(
+      createIcon(["fa-regular", "fa-envelope"], "resource-icon")
     );
+
+    const label = document.createElement("label");
+    label.className = "visually-hidden";
+    label.htmlFor = "emailAddress";
+    label.textContent = "Email address";
+
+    const input = document.createElement("input");
+    input.className = "email-input";
+    input.id = "emailAddress";
+    input.type = "email";
+    input.value = email;
+    input.readOnly = true;
+    input.spellcheck = false;
+    input.autocomplete = "email";
+
+    input.addEventListener("click", function () {
+      input.select();
+    });
+
+    emailField.addEventListener("click", function (event) {
+      if (event.target !== input) {
+        input.focus();
+        input.select();
+      }
+    });
+
+    emailField.append(label, input);
+
+    const copyButton = document.createElement("button");
+    copyButton.className = "side-button copy-button";
+    copyButton.type = "button";
+    copyButton.textContent = "Copy";
+    copyButton.setAttribute("aria-label", "Copy email address");
+    copyButton.title = "Copy email address";
+
+    let resetTimer;
+
+    copyButton.addEventListener("click", async function () {
+      window.clearTimeout(resetTimer);
+
+      try {
+        await copyEmail(email, input);
+        copyButton.classList.remove("is-error");
+        copyButton.classList.add("is-success");
+        copyButton.textContent = "Copied";
+        copyButton.setAttribute("aria-label", "Email address copied");
+        copyStatus.textContent = "Email address copied to clipboard.";
+      } catch (error) {
+        input.focus();
+        input.select();
+        copyButton.classList.remove("is-success");
+        copyButton.classList.add("is-error");
+        copyButton.textContent = "Select";
+        copyButton.setAttribute("aria-label", "Email selected; press Control C to copy");
+        copyStatus.textContent = "The email is selected. Press Control C to copy it.";
+      }
+
+      resetTimer = window.setTimeout(function () {
+        copyButton.classList.remove("is-success", "is-error");
+        copyButton.textContent = "Copy";
+        copyButton.setAttribute("aria-label", "Copy email address");
+        copyStatus.textContent = "";
+      }, 2200);
+    });
+
+    item.append(emailField, copyButton);
+    return item;
   }
 
-  function resetGalleryDragFeedback(scroller) {
-    setGalleryDragOffset(scroller, 0);
-    setGalleryEdgeDragging(scroller, false);
-    setGalleryEdgeGlow(scroller, 0, 0);
-  }
-
-  function enableDragScroll(scroller) {
-    let isDragging = false;
-    let activePointerId = null;
-    let startX = 0;
-    let startScrollLeft = 0;
-    scroller.addEventListener("pointerdown", function (event) {
-      if (event.pointerType === "mouse" && event.button !== 0) {
-        return;
-      }
-
-      isDragging = true;
-      activePointerId = event.pointerId;
-      startX = event.clientX;
-      startScrollLeft = scroller.scrollLeft;
-      scroller.classList.add("is-dragging");
-
-      resetGalleryDragFeedback(scroller);
-      setGalleryEdgeDragging(scroller, true);
-
-      if (scroller.setPointerCapture) {
-        scroller.setPointerCapture(activePointerId);
-      }
-
-      event.preventDefault();
-    });
-
-    scroller.addEventListener("pointermove", function (event) {
-      if (!isDragging || event.pointerId !== activePointerId) {
-        return;
-      }
-
-      const deltaX = event.clientX - startX;
-      const targetScrollLeft = startScrollLeft - deltaX;
-      const maxScrollLeft = getMaxScrollLeft(scroller);
-
-      scroller.scrollLeft = Math.max(0, Math.min(maxScrollLeft, targetScrollLeft));
-
-      updateGalleryDragFeedback(scroller, targetScrollLeft);
-      event.preventDefault();
-    });
-
-    function stopDrag(event) {
-      if (!isDragging) {
-        return;
-      }
-
-      if (event && event.pointerId !== activePointerId) {
-        return;
-      }
-
-      if (activePointerId !== null && scroller.hasPointerCapture && scroller.hasPointerCapture(activePointerId)) {
-        scroller.releasePointerCapture(activePointerId);
-      }
-
-      isDragging = false;
-      activePointerId = null;
-      scroller.classList.remove("is-dragging");
-      resetGalleryDragFeedback(scroller);
+  async function copyEmail(email, input) {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(email);
+      return;
     }
 
-    scroller.addEventListener("pointerup", stopDrag);
-    scroller.addEventListener("pointercancel", stopDrag);
-    scroller.addEventListener("lostpointercapture", stopDrag);
-    window.addEventListener("blur", function () {
-      stopDrag();
-    });
-  }
+    input.focus();
+    input.select();
 
-  function createCard(card) {
-    const article = document.createElement("article");
-    article.className = "card";
-
-    const galleryWrap = document.createElement("div");
-    galleryWrap.className = "card-gallery-wrap";
-
-    const gallery = document.createElement("div");
-    gallery.className = "card-gallery";
-    gallery.setAttribute("aria-label", `${card.title} image gallery`);
-
-    const images = Array.isArray(card.images) && card.images.length > 0
-      ? card.images
-      : (card.image ? [card.image] : []);
-
-    const galleryNodes = images.map(function (image, index) {
-      return createGalleryImage(image, index, card.title);
-    });
-
-    if (images.length > 1) {
-      galleryWrap.classList.add("has-edge-gradient");
+    if (!document.execCommand("copy")) {
+      throw new Error("Copy command was unavailable.");
     }
-
-    gallery.replaceChildren(...galleryNodes);
-
-    enableDragScroll(gallery);
-    galleryWrap.appendChild(gallery);
-
-    if (images.length > 1) {
-      const hint = document.createElement("div");
-      hint.className = "card-gallery-hint";
-      hint.setAttribute("aria-hidden", "true");
-
-      const hintIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      hintIcon.setAttribute("viewBox", "0 0 24 24");
-      hintIcon.setAttribute("focusable", "false");
-
-      const hintPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      hintPath.setAttribute("d", "M5 12h14M9 8l-4 4 4 4M15 8l4 4-4 4");
-      hintPath.setAttribute("fill", "none");
-      hintPath.setAttribute("stroke", "currentColor");
-      hintPath.setAttribute("stroke-width", "2");
-      hintPath.setAttribute("stroke-linecap", "round");
-      hintPath.setAttribute("stroke-linejoin", "round");
-
-      hintIcon.appendChild(hintPath);
-      hint.appendChild(hintIcon);
-      galleryWrap.appendChild(hint);
-    }
-
-    article.appendChild(galleryWrap);
-
-    if (card.links && card.links.length > 0) {
-      const footer = document.createElement("div");
-      footer.className = "card-footer";
-
-      const links = document.createElement("div");
-      links.className = "card-links";
-
-      for (const link of card.links) {
-        const a = document.createElement("a");
-        a.href = link.href;
-        a.textContent = link.label;
-
-        if (link.external) {
-          a.target = "_blank";
-          a.rel = "noopener noreferrer";
-        }
-
-        links.appendChild(a);
-      }
-
-      footer.appendChild(links);
-      article.appendChild(footer);
-    }
-
-    return article;
   }
 })();
